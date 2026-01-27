@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Juego del Impostor</title>
+
+<style>
+body{
+background:#111;
+color:white;
+font-family:Arial;
+text-align:center;
+padding:20px;
+}
+
+input,button{
+font-size:20px;
+padding:10px;
+margin:10px;
+}
+
+#pantalla{
+font-size:28px;
+margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Juego del Impostor</h1>
+
+<div id="config">
+
+Jugadores<br>
+<input id="jugadores" type="number" min="2" value="5"><br>
+
+Impostores<br>
+<input id="impostores" type="number" min="1" value="1"><br>
+
+<button onclick="play()">PLAY</button>
+
+</div>
+
+<button onclick="siguiente()">SIGUIENTE</button>
+
+<div id="pantalla">Presioná PLAY</div>
+
+<script>
+
+const objetos=[
+{nombre:"mesa",tema:"muebles"},
+{nombre:"silla",tema:"muebles"},
+{nombre:"lampara",tema:"muebles"},
+{nombre:"cama",tema:"muebles"},
+{nombre:"sillon",tema:"muebles"},
+{nombre:"ropero",tema:"muebles"},
+{nombre:"heladera",tema:"electrodomesticos"},
+{nombre:"microondas",tema:"electrodomesticos"},
+{nombre:"lavarropas",tema:"electrodomesticos"},
+{nombre:"cafetera",tema:"electrodomesticos"},
+{nombre:"televisor",tema:"tecnologia"},
+{nombre:"notebook",tema:"tecnologia"},
+{nombre:"tablet",tema:"tecnologia"},
+{nombre:"mouse",tema:"tecnologia"},
+{nombre:"auriculares",tema:"tecnologia"},
+{nombre:"telefono",tema:"tecnologia"},
+{nombre:"plato",tema:"cocina"},
+{nombre:"vaso",tema:"cocina"},
+{nombre:"olla",tema:"cocina"},
+{nombre:"sarten",tema:"cocina"},
+{nombre:"cuchillo",tema:"cocina"},
+{nombre:"remera",tema:"ropa"},
+{nombre:"pantalon",tema:"ropa"},
+{nombre:"campera",tema:"ropa"},
+{nombre:"zapatillas",tema:"ropa"},
+{nombre:"gorra",tema:"ropa"},
+{nombre:"toalla",tema:"baño"},
+{nombre:"jabon",tema:"baño"},
+{nombre:"shampoo",tema:"baño"},
+{nombre:"cepillo",tema:"baño"},
+{nombre:"martillo",tema:"herramientas"},
+{nombre:"destornillador",tema:"herramientas"},
+{nombre:"taladro",tema:"herramientas"},
+{nombre:"clavos",tema:"herramientas"},
+{nombre:"pelota",tema:"deportes"},
+{nombre:"bicicleta",tema:"deportes"},
+{nombre:"llaves",tema:"accesorios"},
+{nombre:"billetera",tema:"accesorios"}
+];
+
+let palabra;
+let impostores=[];
+let jugador=1;
+let total=0;
+let mostrando=false;
+let iniciado=false;
+let terminado=false;
+
+function play(){
+
+total=Number(document.getElementById("jugadores").value);
+let cant=Number(document.getElementById("impostores").value);
+
+if(cant>=total){
+alert("Impostores deben ser menos que jugadores");
+return;
+}
+
+palabra=objetos[Math.floor(Math.random()*objetos.length)];
+
+impostores=[];
+while(impostores.length<cant){
+let r=Math.floor(Math.random()*total)+1;
+if(!impostores.includes(r)) impostores.push(r);
+}
+
+jugador=1;
+mostrando=false;
+iniciado=true;
+terminado=false;
+
+document.getElementById("config").style.display="none";
+
+document.getElementById("pantalla").innerHTML=
+"Jugador 1<br>Tocá SIGUIENTE";
+}
+
+function siguiente(){
+
+if(!iniciado){
+alert("Primero tocá PLAY");
+return;
+}
+
+if(terminado){
+document.getElementById("config").style.display="block";
+document.getElementById("pantalla").innerHTML="Presioná PLAY";
+iniciado=false;
+return;
+}
+
+if(jugador>total){
+document.getElementById("pantalla").innerHTML=
+"LISTO<br>A JUGAR";
+terminado=true;
+return;
+}
+
+if(!mostrando){
+
+if(impostores.includes(jugador)){
+document.getElementById("pantalla").innerHTML=
+"<span style='color:red;font-weight:bold'>SOS IMPOSTOR</span><br>Tema: "+palabra.tema;
+}else{
+document.getElementById("pantalla").innerHTML=
+"Tu palabra:<br>"+palabra.nombre;
+}
+
+mostrando=true;
+
+}else{
+
+jugador++;
+mostrando=false;
+
+if(jugador<=total){
+document.getElementById("pantalla").innerHTML=
+"Jugador "+jugador+"<br>Tocá SIGUIENTE";
+}
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
