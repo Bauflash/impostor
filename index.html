@@ -15,20 +15,22 @@ color:white;
 display:flex;
 flex-direction:column;
 align-items:center;
-padding:25px;
+padding:5vw;
 }
 
 h1{margin-bottom:25px}
 
 /* MAIN CARD */
-.card{
-width:340px;
-background:rgba(255,255,255,.05);
-backdrop-filter:blur(20px);
-border-radius:28px;
-padding:22px;
-box-shadow:0 0 40px rgba(130,80,255,.4);
+.card {
+  width: 90%;        /* ocupa el 90% del ancho del dispositivo */
+  max-width: 400px;  /* no se haga demasiado grande en tablets */
+  background: rgba(255,255,255,.05);
+  backdrop-filter: blur(20px);
+  border-radius: 28px;
+  padding: 22px;
+  box-shadow: 0 0 40px rgba(130,80,255,.4);
 }
+
 
 /* OVAL ROW */
 .oval{
@@ -38,9 +40,9 @@ gap:10px;
 background:#0b0b0b;
 border:1px solid rgba(150,100,255,.5);
 border-radius:999px;
-padding:10px 16px;
+padding:2vh 4vw;
 margin-bottom:8px;
-font-size:1.05em;
+font-size:1em;
 }
 
 .oval span{
@@ -67,8 +69,15 @@ outline:none;
 input::-webkit-inner-spin-button,
 input::-webkit-outer-spin-button{
 -webkit-appearance:none;
+margin: 0;
 }
 input[type=number]{-moz-appearance:textfield}
+
+
+/* opcional: ancho completo para que toque fácil en móvil */
+input[type=number] {
+  width: 100%;
+}
 
 /* SURPRISE */
 #surpriseBox{
@@ -85,10 +94,10 @@ background:#8f6bff;
 #playBtn{
 display:block;
 margin:18px auto 0;
-padding:10px 26px;
+padding:2vh 5vw;
 border:none;
 border-radius:16px;
-font-size:1.05em;
+font-size:1em;
 background:linear-gradient(135deg,#6f4cff,#3a1fa3);
 color:white;
 cursor:pointer;
@@ -97,7 +106,8 @@ cursor:pointer;
 /* GAME */
 #nextBtn{
 margin-top:15px;
-padding:10px 0;
+padding:2vh 5vw;
+font-size:1em;
 width:110px;
 border:none;
 border-radius:16px;
@@ -108,17 +118,19 @@ text-align:center;
 cursor:pointer;
 }
 
-#pantalla{
-margin-top:25px;
-width:340px;
-min-height:120px;
-display:none;
-align-items:center;
-justify-content:center;
-border-radius:26px;
-font-size:1.5em;
-flex-direction:column;
+#pantalla {
+  margin-top: 25px;
+  width: 90%;
+  max-width: 400px;
+  min-height: 120px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 26px;
+  font-size: 1.5em;
+  flex-direction: column;
 }
+
 
 #roleBadge{
 display:none;
@@ -476,6 +488,16 @@ const roleBadge = document.getElementById("roleBadge");
 const config = document.getElementById("config");
 const jugadores = document.getElementById("jugadores");
 const impostores = document.getElementById("impostores");
+const numInputs = document.querySelectorAll('input[type=number]');
+
+numInputs.forEach(input => {
+  input.addEventListener('keydown', e => {
+    if(['ArrowUp','ArrowDown'].includes(e.key)) e.preventDefault();
+  });
+  // Evitar scroll del mouse/touch
+  input.addEventListener('wheel', e => e.preventDefault());
+});
+
 
 // ---------- EVENTOS ----------
 playBtn.addEventListener("click", play);
@@ -559,5 +581,3 @@ function siguiente(){
 </script>
 </body>
 </html>
-
-
