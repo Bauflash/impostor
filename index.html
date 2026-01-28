@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.2, maximum-scale=1.2, user-scalable=no">
 <title>Juego del Impostor</title>
 <style>
 body {
@@ -10,12 +11,12 @@ body {
   background: linear-gradient(135deg, #1f1c2c, #928dab);
   color: #fff;
   display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
-  padding:20px;
-  box-sizing:border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 h1 {
@@ -26,11 +27,13 @@ h1 {
 }
 
 .card {
-  background: rgba(255,255,255,0.1);
-  padding: 30px 40px;
+  width: 90%;          /* casi todo el ancho de pantalla */
+  max-width: 400px;    /* no demasiado grande en tablet */
+  padding: 30px 20px;
   border-radius: 20px;
   text-align: center;
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  font-size: 1.5em;    /* letras más grandes para celular */
   margin-bottom: 20px;
 }
 
@@ -41,13 +44,17 @@ h1 {
   margin-top: 10px;
 }
 
+
 button {
+  width: 80%;          /* botones grandes para tocar con el dedo */
+  max-width: 250px;
+  padding: 15px 15px;
+  font-size: 1.3em;
+  margin: 10px 0;      /* espacio vertical entre botones */
   background: #6c63ff;
   color: #fff;
   border: none;
   border-radius: 12px;
-  padding: 15px 25px;
-  font-size: 18px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -459,3 +466,4 @@ function toggleSorpresa() {
 
 </body>
 </html>
+
