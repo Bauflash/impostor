@@ -1,95 +1,192 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.2, user-scalable=no">
-
-<title>Juego del Impostor</title>
+<title>Impostor Game</title>
 <style>
-body {
-  margin:0;
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background: linear-gradient(135deg, #1f1c2c, #928dab);
-  color: #fff;
-  display:flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:system-ui;
+background:#000;
+color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
+padding:25px;
 }
 
-h1 {
-  margin-bottom: 20px;
-  font-size: 2em;
-  text-shadow: 1px 1px 5px #000;
-  text-align:center;
+h1{margin-bottom:25px}
+
+/* MAIN CARD */
+.card{
+width:340px;
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(20px);
+border-radius:28px;
+padding:22px;
+box-shadow:0 0 40px rgba(130,80,255,.4);
 }
 
-.card {
-  width: 90%;          /* casi todo el ancho de pantalla */
-  max-width: 400px;    /* no demasiado grande en tablet */
-  padding: 30px 20px;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  font-size: 1.5em;    /* letras más grandes para celular */
-  margin-bottom: 20px;
+/* OVAL ROW */
+.oval{
+display:flex;
+align-items:center;
+gap:10px;
+background:#0b0b0b;
+border:1px solid rgba(150,100,255,.5);
+border-radius:999px;
+padding:10px 16px;
+margin-bottom:8px;
+font-size:1.05em;
 }
 
-.botones {
-  width: 100%;          /* botones grandes para tocar con el dedo */
-  max-width: 400px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 10px;
+.oval span{
+opacity:.85;
 }
 
-
-button {
-  width: 100%;          /* botones grandes para tocar con el dedo */
-  padding: 15px 15px;
-  font-size: 1.3em;
-  margin: 10px 0;      /* espacio vertical entre botones */
-  background: #6c63ff;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
+.oval input,
+#surpriseBox{
+margin-left:auto;
 }
 
-button:hover {
-  background: #5750c3;
-  transform: scale(1.05);
+/* NUMBERS */
+input{
+width:45px;
+background:none;
+border:none;
+color:white;
+text-align:right;
+font-size:1.1em;
+outline:none;
+}
+
+/* remove arrows */
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button{
+-webkit-appearance:none;
+}
+input[type=number]{-moz-appearance:textfield}
+
+/* SURPRISE */
+#surpriseBox{
+width:22px;
+height:22px;
+border-radius:6px;
+border:1px solid rgba(150,100,255,.7);
+}
+#surpriseBox.active{
+background:#8f6bff;
+}
+
+/* PLAY */
+#playBtn{
+display:block;
+margin:18px auto 0;
+padding:10px 26px;
+border:none;
+border-radius:16px;
+font-size:1.05em;
+background:linear-gradient(135deg,#6f4cff,#3a1fa3);
+color:white;
+cursor:pointer;
+}
+
+/* GAME */
+#nextBtn{
+margin-top:15px;
+padding:10px 0;
+width:110px;
+border:none;
+border-radius:16px;
+background:linear-gradient(135deg,#6f4cff,#3a1fa3);
+color:white;
+visibility:hidden;
+text-align:center;
+cursor:pointer;
+}
+
+#pantalla{
+margin-top:25px;
+width:340px;
+min-height:120px;
+display:none;
+align-items:center;
+justify-content:center;
+border-radius:26px;
+font-size:1.5em;
+flex-direction:column;
+}
+
+#roleBadge{
+display:none;
+margin:10px 0 14px;
+padding:10px 26px;
+border-radius:999px;
+border:1px solid rgba(150,100,255,.7);
+font-size:1.1em;
+letter-spacing:.08em;
+}
+
+.hintTitle{
+font-size:.65em;
+opacity:.6;
+margin-bottom:10px;
+letter-spacing:.08em;
+}
+
+.hintText{
+font-size:1.2em;
+}
+
+.hint{
+margin-top:2px;
+font-size:.65em;
+opacity:.7;
+text-align:center;
+}
+
+.tema{
+margin-top:20px;
+font-size:1.2em;
+text-align:center;
 }
 </style>
 </head>
 <body>
 
-<h1>Juego del Impostor</h1>
+<h1>Impostor Game</h1>
 
-<div id="config">
-  Jugadores<br>
-  <input id="jugadores" type="number" min="2" value="5"><br><br>
+<div id="roleBadge">IMPOSTOR</div>
 
-  Impostores<br>
-  <input id="impostores" type="number" min="1" value="1"><br><br>
+<div id="config" class="card">
 
-  <button id="sorpresaBtn" onclick="toggleSorpresa()">Modo Sorpresa ⬜</button>
+<div class="oval">
+<span>Players</span>
+<input id="jugadores" type="number" min="2" value="5">
 </div>
 
-<div class="botones">
-  <button onclick="play()">PLAY</button>
-  <button onclick="siguiente()">SIGUIENTE</button>
+<div class="oval">
+<span>Impostors</span>
+<input id="impostores" type="number" min="1" value="1">
 </div>
-<br>
-<div id="pantalla" class="card">Presioná PLAY</div>
+
+<div class="oval" onclick="toggleSorpresa()">
+<span>Surprise Mode</span>
+<div id="surpriseBox"></div>
+</div>
+
+<button id="playBtn">PLAY</button>
+
+</div>
+
+<div id="pantalla" class="card"></div>
+
+<button id="nextBtn">NEXT</button>
 
 <script>
-// Lista inicial de objetos (puedes reemplazar por tus 500)
+// ---------- DATOS ----------
 const objetos = [
 {nombre:"pared", tema:"casa"},
 {nombre:"techo",tema:"casa"},
@@ -362,114 +459,102 @@ const objetos = [
 
 ];
 
-let modoSorpresa = false;
+// ---------- VARIABLES ----------
+let modo=false;
 let palabra;
-let impostores = [];
-let jugador = 1;
-let total = 0;
-let mostrando = false;
-let iniciado = false;
-let terminado = false;
+let imps=[];
+let jugador=0;
+let total=0;
+let mostrando=false;
 
-function play() {
-    total = Number(document.getElementById("jugadores").value);
-    let cant = Number(document.getElementById("impostores").value);
+const surpriseBox = document.getElementById("surpriseBox");
+const playBtn = document.getElementById("playBtn");
+const nextBtn = document.getElementById("nextBtn");
+const pantalla = document.getElementById("pantalla");
+const roleBadge = document.getElementById("roleBadge");
+const config = document.getElementById("config");
+const jugadores = document.getElementById("jugadores");
+const impostores = document.getElementById("impostores");
 
-    if (cant >= total) {
-        alert("Impostores deben ser menos que jugadores");
-        return;
-    }
+// ---------- EVENTOS ----------
+playBtn.addEventListener("click", play);
+nextBtn.addEventListener("click", siguiente);
 
-    // Elegir palabra al azar
-    palabra = objetos[Math.floor(Math.random() * objetos.length)];
-
-    // Elegir impostores
-    impostores = [];
-    while (impostores.length < cant) {
-        let r = Math.floor(Math.random() * total) + 1;
-        if (!impostores.includes(r)) impostores.push(r);
-    }
-
-    // Modo sorpresa 5%
-    if (modoSorpresa && Math.random() < 0.05) {
-        impostores = [];
-        for (let i = 1; i <= total; i++) impostores.push(i);
-    }
-
-    jugador = 1;
-    mostrando = false;
-    iniciado = true;
-    terminado = false;
-
-    // Ocultar inputs
-    document.getElementById("config").style.display = "none";
-
-    // Mostrar primer jugador
-    const pantalla = document.getElementById("pantalla");
-    pantalla.innerHTML = "Jugador 1<br>Tocá SIGUIENTE";
-    pantalla.style.background = "rgba(255,255,255,0.1)";
+// ---------- FUNCIONES ----------
+function toggleSorpresa(){
+  modo=!modo;
+  surpriseBox.classList.toggle("active");
 }
 
-function siguiente() {
-    if (!iniciado) {
-        alert("Primero tocá PLAY");
-        return;
+function play(){
+  total = Number(jugadores.value);
+  let cant = Number(impostores.value);
+
+  if(cant >= total){
+    alert("Impostors must be less than players");
+    return;
+  }
+
+  palabra = objetos[Math.floor(Math.random()*objetos.length)];
+
+  imps = [];
+
+  // MODO SURPRISE: 5% chance ALL IMPOS
+  if(modo && Math.random() < 0.05){
+    for(let i=0;i<total;i++) imps.push(i);
+  } else {
+    while(imps.length < cant){
+      let r = Math.floor(Math.random()*total);
+      if(!imps.includes(r)) imps.push(r);
     }
+  }
 
-    const pantalla = document.getElementById("pantalla");
+  config.style.display="none";
+  pantalla.style.display="flex";
+  nextBtn.style.visibility="visible";
+  roleBadge.style.display="none";
 
-    // Si ya terminó el juego, reiniciamos
-    if (terminado) {
-        document.getElementById("config").style.display = "block";
-        pantalla.innerHTML = "Presioná PLAY";
-        pantalla.style.background = "rgba(255,255,255,0.1)";
-        iniciado = false;
-        return;
-    }
+  jugador=0;
+  mostrando=false;
 
-    // Mostrar palabra del jugador actual
-    if(!mostrando){
-
-    // Mostrar palabra o impostor
-    if(impostores.includes(jugador)){
-        document.getElementById("pantalla").style.background = "rgba(255,0,0,0.3)";
-        document.getElementById("pantalla").innerHTML = "SOS IMPOSTOR<br>" + palabra.tema;
-    } else {
-        document.getElementById("pantalla").style.background = "rgba(0,255,0,0.3)";
-        document.getElementById("pantalla").innerHTML = "Tu palabra:<br>" + palabra.nombre;
-    }
-
-    mostrando = true;
-
-    // Si es el último jugador, marcamos terminado y mostramos listo
-    if(jugador === total){
-        terminado = true;
-        document.getElementById("pantalla").innerHTML = "LISTO<br>A JUGAR";
-        document.getElementById("pantalla").style.background = "rgba(255,255,255,0.1)";
-    }
-
-    } else {
-        // Para jugadores anteriores
-        jugador++;
-        mostrando = false;
-        document.getElementById("pantalla").style.background = "rgba(255,255,255,0.1)";
-        if(jugador <= total){
-            document.getElementById("pantalla").innerHTML = "Jugador " + jugador + "<br>Tocá SIGUIENTE";
-        }
-    }
+  document.querySelector("h1").innerText="Player 1";
+  pantalla.innerText="1";
+  nextBtn.innerText="REVEAL";
 }
 
-function toggleSorpresa() {
-    modoSorpresa = !modoSorpresa;
-    document.getElementById("sorpresaBtn").innerHTML =
-        modoSorpresa ? "Modo Sorpresa ✅" : "Modo Sorpresa ⬜";
+function siguiente(){
+  pantalla.className="card";
+
+  if(!mostrando){
+    if(imps.includes(jugador)){
+      roleBadge.style.display="block";
+      pantalla.innerHTML=
+        "<div class='hintTitle'>HINT</div>"+
+        "<div class='hintText'>"+palabra.tema+"</div>";
+    } else {
+      roleBadge.style.display="none";
+      pantalla.innerText=palabra.nombre;
+    }
+    nextBtn.innerText="NEXT";
+    mostrando=true;
+  } else {
+    jugador++;
+    mostrando=false;
+    roleBadge.style.display="none";
+
+    if(jugador < total){
+      document.querySelector("h1").innerText="Player "+(jugador+1);
+      pantalla.innerText=jugador+1;
+      nextBtn.innerText="REVEAL";
+    } else {
+      nextBtn.style.visibility="hidden";
+      pantalla.style.display="none";
+      config.style.display="block";
+      roleBadge.style.display="none";
+      document.querySelector("h1").innerText="Impostor Game";
+    }
+  }
 }
 </script>
-
 </body>
 </html>
-
-
-
-
-
