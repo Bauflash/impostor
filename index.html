@@ -3,320 +3,458 @@
 <head>
 <meta charset="UTF-8">
 <title>Juego del Impostor</title>
-
 <style>
-body{
-background:#111;
-color:white;
-font-family:Arial;
-text-align:center;
-padding:20px;
+body {
+  margin:0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: linear-gradient(135deg, #1f1c2c, #928dab);
+  color: #fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  padding:20px;
+  box-sizing:border-box;
 }
 
-input,button{
-font-size:20px;
-padding:10px;
-margin:10px;
+h1 {
+  margin-bottom: 20px;
+  font-size: 2em;
+  text-shadow: 1px 1px 5px #000;
+  text-align:center;
 }
 
-#pantalla{
-font-size:28px;
-margin-top:20px;
+.card {
+  background: rgba(255,255,255,0.1);
+  padding: 30px 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+}
+
+.botones {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+button {
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 15px 25px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+button:hover {
+  background: #5750c3;
+  transform: scale(1.05);
 }
 </style>
 </head>
-
 <body>
 
 <h1>Juego del Impostor</h1>
 
 <div id="config">
+  Jugadores<br>
+  <input id="jugadores" type="number" min="2" value="5"><br><br>
 
-Jugadores<br>
-<input id="jugadores" type="number" min="2" value="5"><br>
+  Impostores<br>
+  <input id="impostores" type="number" min="1" value="1"><br><br>
 
-Impostores<br>
-<input id="impostores" type="number" min="1" value="1"><br>
-
-<button onclick="play()">PLAY</button>
-
+  <button id="sorpresaBtn" onclick="toggleSorpresa()">Modo Sorpresa ⬜</button>
 </div>
 
-<button onclick="siguiente()">SIGUIENTE</button>
-
-<div id="pantalla">Presioná PLAY</div>
+<div class="botones">
+  <button onclick="play()">PLAY</button>
+  <button onclick="siguiente()">SIGUIENTE</button>
+</div>
+<br>
+<div id="pantalla" class="card">Presioná PLAY</div>
 
 <script>
-
+// Lista inicial de objetos (puedes reemplazar por tus 500)
 const objetos = [
+{nombre:"pared", tema:"casa"},
+{nombre:"techo",tema:"casa"},
+{nombre:"puerta",tema:"casa"},
+{nombre:"ventana",tema:"casa"},
 {nombre:"mesa",tema:"casa"},
 {nombre:"silla",tema:"casa"},
 {nombre:"cama",tema:"casa"},
-{nombre:"puerta",tema:"casa"},
-{nombre:"ventana",tema:"casa"},
+{nombre:"sillon",tema:"casa"},
 {nombre:"televisor",tema:"casa"},
-{nombre:"heladera",tema:"casa"},
-{nombre:"lampara",tema:"casa"},
-{nombre:"sofa",tema:"casa"},
 {nombre:"alfombra",tema:"casa"},
+{nombre:"lampara",tema:"casa"},
+{nombre:"ropero",tema:"casa"},
 {nombre:"espejo",tema:"casa"},
-{nombre:"reloj",tema:"casa"},
-{nombre:"plato",tema:"casa"},
+{nombre:"cortina",tema:"casa"},
+{nombre:"heladera",tema:"casa"},
+{nombre:"microondas",tema:"casa"},
 {nombre:"vaso",tema:"casa"},
-{nombre:"taza",tema:"casa"},
-{nombre:"sarten",tema:"casa"},
-{nombre:"cuchillo",tema:"casa"},
-{nombre:"tenedor",tema:"casa"},
-{nombre:"cuchara",tema:"casa"},
+{nombre:"plato",tema:"casa"},
+{nombre:"escoba",tema:"casa"},
+{nombre:"toalla",tema:"casa"},
 
-{nombre:"lapiz",tema:"escuela"},
-{nombre:"birome",tema:"escuela"},
-{nombre:"cuaderno",tema:"escuela"},
-{nombre:"libro",tema:"escuela"},
-{nombre:"mochila",tema:"escuela"},
-{nombre:"cartuchera",tema:"escuela"},
-{nombre:"regla",tema:"escuela"},
-{nombre:"goma",tema:"escuela"},
-{nombre:"hoja",tema:"escuela"},
-{nombre:"tijera",tema:"escuela"},
-{nombre:"marcador",tema:"escuela"},
+{nombre:"aula",tema:"escuela"},
 {nombre:"pizarron",tema:"escuela"},
 {nombre:"banco",tema:"escuela"},
-{nombre:"carpeta",tema:"escuela"},
-{nombre:"mapa",tema:"escuela"},
-{nombre:"calculadora",tema:"escuela"},
-{nombre:"computadora",tema:"escuela"},
-
-{nombre:"remera",tema:"ropa"},
-{nombre:"pantalon",tema:"ropa"},
-{nombre:"zapatillas",tema:"ropa"},
-{nombre:"campera",tema:"ropa"},
-{nombre:"gorra",tema:"ropa"},
-{nombre:"buzo",tema:"ropa"},
-{nombre:"medias",tema:"ropa"},
-{nombre:"short",tema:"ropa"},
-{nombre:"camisa",tema:"ropa"},
-{nombre:"pollera",tema:"ropa"},
-{nombre:"vestido",tema:"ropa"},
-{nombre:"bufanda",tema:"ropa"},
-{nombre:"guantes",tema:"ropa"},
-{nombre:"pijama",tema:"ropa"},
-{nombre:"cinturon",tema:"ropa"},
-{nombre:"sombrero",tema:"ropa"},
-{nombre:"botas",tema:"ropa"},
-{nombre:"pantuflas",tema:"ropa"},
-
-{nombre:"pan",tema:"comida"},
-{nombre:"pizza",tema:"comida"},
-{nombre:"hamburguesa",tema:"comida"},
-{nombre:"empanada",tema:"comida"},
-{nombre:"arroz",tema:"comida"},
-{nombre:"fideos",tema:"comida"},
-{nombre:"carne",tema:"comida"},
-{nombre:"pollo",tema:"comida"},
-{nombre:"papa",tema:"comida"},
-{nombre:"manzana",tema:"comida"},
-{nombre:"banana",tema:"comida"},
-{nombre:"naranja",tema:"comida"},
-{nombre:"helado",tema:"comida"},
-{nombre:"galletita",tema:"comida"},
-{nombre:"torta",tema:"comida"},
-{nombre:"chocolate",tema:"comida"},
-{nombre:"caramelo",tema:"comida"},
-{nombre:"sandwich",tema:"comida"},
-{nombre:"ensalada",tema:"comida"},
-{nombre:"sopa",tema:"comida"},
-
-{nombre:"celular",tema:"tecnologia"},
-{nombre:"tablet",tema:"tecnologia"},
-{nombre:"notebook",tema:"tecnologia"},
-{nombre:"mouse",tema:"tecnologia"},
-{nombre:"teclado",tema:"tecnologia"},
-{nombre:"auriculares",tema:"tecnologia"},
-{nombre:"camara",tema:"tecnologia"},
-{nombre:"parlante",tema:"tecnologia"},
-{nombre:"joystick",tema:"tecnologia"},
-{nombre:"reloj_digital",tema:"tecnologia"},
-
-{nombre:"pelota",tema:"deportes"},
-{nombre:"bicicleta",tema:"deportes"},
-{nombre:"arco",tema:"deportes"},
-{nombre:"patin",tema:"deportes"},
-{nombre:"raqueta",tema:"deportes"},
-{nombre:"pesas",tema:"deportes"},
-{nombre:"casco",tema:"deportes"},
-{nombre:"skate",tema:"deportes"},
-
-{nombre:"perro",tema:"animales"},
-{nombre:"gato",tema:"animales"},
-{nombre:"caballo",tema:"animales"},
-{nombre:"vaca",tema:"animales"},
-{nombre:"pajaro",tema:"animales"},
-{nombre:"pez",tema:"animales"},
-{nombre:"conejo",tema:"animales"},
-{nombre:"tortuga",tema:"animales"},
-{nombre:"raton",tema:"animales"},
-{nombre:"leon",tema:"animales"},
-
-{nombre:"auto",tema:"calle"},
-{nombre:"colectivo",tema:"calle"},
-{nombre:"moto",tema:"calle"},
-{nombre:"semaforo",tema:"calle"},
-{nombre:"vereda",tema:"calle"},
-{nombre:"calle",tema:"calle"},
-{nombre:"puente",tema:"calle"},
-{nombre:"bicisenda",tema:"calle"},
-{nombre:"parada",tema:"calle"},
-{nombre:"cartel",tema:"calle"},
-
-{nombre:"arbol",tema:"naturaleza"},
-{nombre:"flor",tema:"naturaleza"},
-{nombre:"pasto",tema:"naturaleza"},
-{nombre:"rio",tema:"naturaleza"},
-{nombre:"lago",tema:"naturaleza"},
-{nombre:"montaña",tema:"naturaleza"},
-{nombre:"arena",tema:"naturaleza"},
-{nombre:"mar",tema:"naturaleza"},
-{nombre:"sol",tema:"naturaleza"},
-{nombre:"nube",tema:"naturaleza"},
-
-{nombre:"peluche",tema:"juguetes"},
-{nombre:"muñeca",tema:"juguetes"},
-{nombre:"autito",tema:"juguetes"},
-{nombre:"bloques",tema:"juguetes"},
-{nombre:"rompecabezas",tema:"juguetes"},
-{nombre:"cartas",tema:"juguetes"},
-{nombre:"dado",tema:"juguetes"},
-{nombre:"yo-yo",tema:"juguetes"},
-{nombre:"burbuja",tema:"juguetes"},
-
-{nombre:"llave",tema:"casa"},
-{nombre:"control",tema:"casa"},
-{nombre:"escoba",tema:"casa"},
-{nombre:"pala",tema:"casa"},
-{nombre:"balde",tema:"casa"},
-{nombre:"trapo",tema:"casa"},
-{nombre:"jabón",tema:"casa"},
-{nombre:"toalla",tema:"casa"},
-{nombre:"cepillo",tema:"casa"},
-{nombre:"papel",tema:"casa"},
-
+{nombre:"cuaderno",tema:"escuela"},
+{nombre:"lapiz",tema:"escuela"},
+{nombre:"birome",tema:"escuela"},
+{nombre:"regla",tema:"escuela"},
+{nombre:"mochila",tema:"escuela"},
+{nombre:"profesor",tema:"escuela"},
+{nombre:"alumno",tema:"escuela"},
 {nombre:"recreo",tema:"escuela"},
 {nombre:"campana",tema:"escuela"},
-{nombre:"aula",tema:"escuela"},
 {nombre:"nota",tema:"escuela"},
 {nombre:"examen",tema:"escuela"},
+{nombre:"director",tema:"escuela"},
 {nombre:"bandera",tema:"escuela"},
-{nombre:"acto",tema:"escuela"},
+{nombre:"fila",tema:"escuela"},
+{nombre:"patio",tema:"escuela"},
+{nombre:"mapa",tema:"escuela"},
+{nombre:"cartuchera",tema:"escuela"},
 
-{nombre:"agua",tema:"comida"},
-{nombre:"jugo",tema:"comida"},
-{nombre:"leche",tema:"comida"},
-{nombre:"gaseosa",tema:"comida"},
-{nombre:"mate",tema:"comida"},
-{nombre:"café",tema:"comida"},
-{nombre:"té",tema:"comida"},
-{nombre:"pancho",tema:"comida"},
-{nombre:"pochoclo",tema:"comida"},
-{nombre:"tostada",tema:"comida"},
+{nombre:"auto",tema:"ciudad"},
+{nombre:"colectivo",tema:"ciudad"},
+{nombre:"moto",tema:"ciudad"},
+{nombre:"bicicleta",tema:"ciudad"},
+{nombre:"semaforo",tema:"ciudad"},
+{nombre:"vereda",tema:"ciudad"},
+{nombre:"cartel",tema:"ciudad"},
+{nombre:"puente",tema:"ciudad"},
+{nombre:"plaza",tema:"ciudad"},
+{nombre:"parque",tema:"ciudad"},
+{nombre:"kiosco",tema:"ciudad"},
+{nombre:"panaderia",tema:"ciudad"},
+{nombre:"hospital",tema:"ciudad"},
+{nombre:"cine",tema:"ciudad"},
+{nombre:"supermercado",tema:"ciudad"},
+{nombre:"estacion",tema:"ciudad"},
+{nombre:"rotonda",tema:"ciudad"},
+{nombre:"peatonal",tema:"ciudad"},
+{nombre:"galeria",tema:"ciudad"},
+{nombre:"esquina",tema:"ciudad"},
 
+{nombre:"pelota",tema:"deportes"},
+{nombre:"arco",tema:"deportes"},
+{nombre:"cancha",tema:"deportes"},
+{nombre:"equipo",tema:"deportes"},
+{nombre:"gol",tema:"deportes"},
+{nombre:"remera",tema:"deportes"},
+{nombre:"zapatillas",tema:"deportes"},
+{nombre:"silbato",tema:"deportes"},
+{nombre:"red",tema:"deportes"},
+{nombre:"entrenador",tema:"deportes"},
+{nombre:"correr",tema:"deportes"},
+{nombre:"saltar",tema:"deportes"},
+{nombre:"patear",tema:"deportes"},
+{nombre:"atajar",tema:"deportes"},
+{nombre:"ganar",tema:"deportes"},
+{nombre:"perder",tema:"deportes"},
+{nombre:"empatar",tema:"deportes"},
+{nombre:"partido",tema:"deportes"},
+{nombre:"trofeo",tema:"deportes"},
+{nombre:"medalla",tema:"deportes"},
+
+{nombre:"pizza",tema:"comida"},
+{nombre:"hamburguesa",tema:"comida"},
+{nombre:"pan",tema:"comida"},
+{nombre:"fideos",tema:"comida"},
+{nombre:"arroz",tema:"comida"},
+{nombre:"milanesa",tema:"comida"},
+{nombre:"empanada",tema:"comida"},
+{nombre:"tarta",tema:"comida"},
+{nombre:"sandwich",tema:"comida"},
+{nombre:"huevo",tema:"comida"},
+{nombre:"queso",tema:"comida"},
+{nombre:"jamon",tema:"comida"},
+{nombre:"pure",tema:"comida"},
+{nombre:"ensalada",tema:"comida"},
+{nombre:"sopa",tema:"comida"},
+{nombre:"galletitas",tema:"comida"},
+{nombre:"helado",tema:"comida"},
+{nombre:"torta",tema:"comida"},
+{nombre:"chocolate",tema:"comida"},
+{nombre:"pochoclos",tema:"comida"},
+
+{nombre:"celular",tema:"tecnologia"},
+{nombre:"computadora",tema:"tecnologia"},
 {nombre:"pantalla",tema:"tecnologia"},
+{nombre:"teclado",tema:"tecnologia"},
+{nombre:"mouse",tema:"tecnologia"},
+{nombre:"auriculares",tema:"tecnologia"},
+{nombre:"parlante",tema:"tecnologia"},
+{nombre:"wifi",tema:"tecnologia"},
+{nombre:"internet",tema:"tecnologia"},
+{nombre:"app",tema:"tecnologia"},
 {nombre:"video",tema:"tecnologia"},
 {nombre:"foto",tema:"tecnologia"},
 {nombre:"mensaje",tema:"tecnologia"},
 {nombre:"juego",tema:"tecnologia"},
-{nombre:"app",tema:"tecnologia"},
-{nombre:"wifi",tema:"tecnologia"},
-{nombre:"sonido",tema:"tecnologia"},
-{nombre:"luz",tema:"tecnologia"},
-{nombre:"boton",tema:"tecnologia"}
+{nombre:"camara",tema:"tecnologia"},
+{nombre:"control",tema:"tecnologia"},
+{nombre:"tablet",tema:"tecnologia"},
+{nombre:"cargador",tema:"tecnologia"},
+{nombre:"bateria",tema:"tecnologia"},
+{nombre:"boton",tema:"tecnologia"},
+
+{nombre:"valija",tema:"viaje"},
+{nombre:"hotel",tema:"viaje"},
+{nombre:"mapa",tema:"viaje"},
+{nombre:"avion",tema:"viaje"},
+{nombre:"aeropuerto",tema:"viaje"},
+{nombre:"pasaje",tema:"viaje"},
+{nombre:"asiento",tema:"viaje"},
+{nombre:"ventanilla",tema:"viaje"},
+{nombre:"playa",tema:"viaje"},
+{nombre:"foto",tema:"viaje"},
+{nombre:"recuerdo",tema:"viaje"},
+{nombre:"excursion",tema:"viaje"},
+{nombre:"ciudad",tema:"viaje"},
+{nombre:"pais",tema:"viaje"},
+{nombre:"calle",tema:"viaje"},
+{nombre:"tour",tema:"viaje"},
+{nombre:"guia",tema:"viaje"},
+{nombre:"entrada",tema:"viaje"},
+{nombre:"boleto",tema:"viaje"},
+{nombre:"souvenir",tema:"viaje"},
+
+{nombre:"buenos_aires",tema:"lugares_de_argentina"},
+{nombre:"cordoba",tema:"lugares_de_argentina"},
+{nombre:"rosario",tema:"lugares_de_argentina"},
+{nombre:"mendoza",tema:"lugares_de_argentina"},
+{nombre:"bariloche",tema:"lugares_de_argentina"},
+{nombre:"mar_del_plata",tema:"lugares_de_argentina"},
+{nombre:"la_plata",tema:"lugares_de_argentina"},
+{nombre:"salta",tema:"lugares_de_argentina"},
+{nombre:"jujuy",tema:"lugares_de_argentina"},
+{nombre:"ushuaia",tema:"lugares_de_argentina"},
+{nombre:"el_calafate",tema:"lugares_de_argentina"},
+{nombre:"iguazu",tema:"lugares_de_argentina"},
+{nombre:"cataratas",tema:"lugares_de_argentina"},
+{nombre:"glaciar_perito_moreno",tema:"lugares_de_argentina"},
+{nombre:"quebrada_de_humahuaca",tema:"lugares_de_argentina"},
+{nombre:"cerro_aconcagua",tema:"lugares_de_argentina"},
+{nombre:"valle_de_la_luna",tema:"lugares_de_argentina"},
+{nombre:"san_rafael",tema:"lugares_de_argentina"},
+{nombre:"villa_carlos_paz",tema:"lugares_de_argentina"},
+{nombre:"pinamar",tema:"lugares_de_argentina"},
+
+{nombre:"globos",tema:"fiesta"},
+{nombre:"musica",tema:"fiesta"},
+{nombre:"torta",tema:"fiesta"},
+{nombre:"velas",tema:"fiesta"},
+{nombre:"regalo",tema:"fiesta"},
+{nombre:"brillos",tema:"fiesta"},
+{nombre:"invitacion",tema:"fiesta"},
+{nombre:"foto",tema:"fiesta"},
+{nombre:"baile",tema:"fiesta"},
+{nombre:"luces",tema:"fiesta"},
+{nombre:"mesa_dulce",tema:"fiesta"},
+{nombre:"confeti",tema:"fiesta"},
+{nombre:"sombrero",tema:"fiesta"},
+{nombre:"sorpresa",tema:"fiesta"},
+{nombre:"abrazo",tema:"fiesta"},
+{nombre:"risa",tema:"fiesta"},
+{nombre:"brindis",tema:"fiesta"},
+{nombre:"gaseosa",tema:"fiesta"},
+{nombre:"snacks",tema:"fiesta"},
+{nombre:"amigos",tema:"fiesta"},
+
+{nombre:"jugar",tema:"tiempo_libre"},
+{nombre:"mirar_tv",tema:"tiempo_libre"},
+{nombre:"escuchar_musica",tema:"tiempo_libre"},
+{nombre:"dibujar",tema:"tiempo_libre"},
+{nombre:"leer",tema:"tiempo_libre"},
+{nombre:"caminar",tema:"tiempo_libre"},
+{nombre:"correr",tema:"tiempo_libre"},
+{nombre:"bicicleta",tema:"tiempo_libre"},
+{nombre:"videojuegos",tema:"tiempo_libre"},
+{nombre:"pelicula",tema:"tiempo_libre"},
+{nombre:"series",tema:"tiempo_libre"},
+{nombre:"charlar",tema:"tiempo_libre"},
+{nombre:"descansar",tema:"tiempo_libre"},
+{nombre:"pasear",tema:"tiempo_libre"},
+{nombre:"juntada",tema:"tiempo_libre"},
+{nombre:"musica",tema:"tiempo_libre"},
+
+{nombre:"oficina",tema:"trabajo"},
+{nombre:"escritorio",tema:"trabajo"},
+{nombre:"silla",tema:"trabajo"},
+{nombre:"computadora",tema:"trabajo"},
+{nombre:"telefono",tema:"trabajo"},
+{nombre:"reunion",tema:"trabajo"},
+{nombre:"jefe",tema:"trabajo"},
+{nombre:"empleado",tema:"trabajo"},
+{nombre:"horario",tema:"trabajo"},
+{nombre:"tarea",tema:"trabajo"},
+{nombre:"archivo",tema:"trabajo"},
+{nombre:"correo",tema:"trabajo"},
+{nombre:"agenda",tema:"trabajo"},
+{nombre:"proyecto",tema:"trabajo"},
+{nombre:"equipo",tema:"trabajo"},
+{nombre:"descanso",tema:"trabajo"},
+{nombre:"almuerzo",tema:"trabajo"},
+{nombre:"planilla",tema:"trabajo"},
+{nombre:"impresora",tema:"trabajo"},
+{nombre:"contrato",tema:"trabajo"},
+
+{nombre:"colectivo",tema:"transporte"},
+{nombre:"auto",tema:"transporte"},
+{nombre:"tren",tema:"transporte"},
+{nombre:"subte",tema:"transporte"},
+{nombre:"taxi",tema:"transporte"},
+{nombre:"remis",tema:"transporte"},
+{nombre:"bicicleta",tema:"transporte"},
+{nombre:"moto",tema:"transporte"},
+{nombre:"parada",tema:"transporte"},
+{nombre:"boleto",tema:"transporte"},
+{nombre:"asiento",tema:"transporte"},
+{nombre:"ventana",tema:"transporte"},
+{nombre:"chofer",tema:"transporte"},
+{nombre:"estacion",tema:"transporte"},
+{nombre:"terminal",tema:"transporte"},
+{nombre:"pasajero",tema:"transporte"},
+{nombre:"ruta",tema:"transporte"},
+{nombre:"viaje",tema:"transporte"},
+{nombre:"trafico",tema:"transporte"},
+{nombre:"peaje",tema:"transporte"},
+
+{nombre:"pesas",tema:"gimnasio"},
+{nombre:"mancuernas",tema:"gimnasio"},
+{nombre:"barra",tema:"gimnasio"},
+{nombre:"colchoneta",tema:"gimnasio"},
+{nombre:"cinta",tema:"gimnasio"},
+{nombre:"bicicleta",tema:"gimnasio"},
+{nombre:"espejo",tema:"gimnasio"},
+{nombre:"botella",tema:"gimnasio"},
+{nombre:"toalla",tema:"gimnasio"},
+{nombre:"remera",tema:"gimnasio"},
+{nombre:"short",tema:"gimnasio"},
+{nombre:"zapatillas",tema:"gimnasio"},
+{nombre:"entrenador",tema:"gimnasio"},
+{nombre:"rutina",tema:"gimnasio"},
+{nombre:"musica",tema:"gimnasio"},
+{nombre:"estiramiento",tema:"gimnasio"},
+{nombre:"abdominales",tema:"gimnasio"},
+{nombre:"flexiones",tema:"gimnasio"},
+{nombre:"descanso",tema:"gimnasio"},
+{nombre:"ducha",tema:"gimnasio"},
 
 ];
 
+let modoSorpresa = false;
 let palabra;
-let impostores=[];
-let jugador=1;
-let total=0;
-let mostrando=false;
-let iniciado=false;
-let terminado=false;
+let impostores = [];
+let jugador = 1;
+let total = 0;
+let mostrando = false;
+let iniciado = false;
+let terminado = false;
 
-function play(){
+function play() {
+    total = Number(document.getElementById("jugadores").value);
+    let cant = Number(document.getElementById("impostores").value);
 
-total=Number(document.getElementById("jugadores").value);
-let cant=Number(document.getElementById("impostores").value);
+    if (cant >= total) {
+        alert("Impostores deben ser menos que jugadores");
+        return;
+    }
 
-if(cant>=total){
-alert("Impostores deben ser menos que jugadores");
-return;
+    // Elegir palabra al azar
+    palabra = objetos[Math.floor(Math.random() * objetos.length)];
+
+    // Elegir impostores
+    impostores = [];
+    while (impostores.length < cant) {
+        let r = Math.floor(Math.random() * total) + 1;
+        if (!impostores.includes(r)) impostores.push(r);
+    }
+
+    // Modo sorpresa 5%
+    if (modoSorpresa && Math.random() < 0.05) {
+        impostores = [];
+        for (let i = 1; i <= total; i++) impostores.push(i);
+    }
+
+    jugador = 1;
+    mostrando = false;
+    iniciado = true;
+    terminado = false;
+
+    // Ocultar inputs
+    document.getElementById("config").style.display = "none";
+
+    // Mostrar primer jugador
+    const pantalla = document.getElementById("pantalla");
+    pantalla.innerHTML = "Jugador 1<br>Tocá SIGUIENTE";
+    pantalla.style.background = "rgba(255,255,255,0.1)";
 }
 
-palabra=objetos[Math.floor(Math.random()*objetos.length)];
+function siguiente() {
+    if (!iniciado) {
+        alert("Primero tocá PLAY");
+        return;
+    }
 
-impostores=[];
-while(impostores.length<cant){
-let r=Math.floor(Math.random()*total)+1;
-if(!impostores.includes(r)) impostores.push(r);
+    const pantalla = document.getElementById("pantalla");
+
+    // Si ya terminó el juego, reiniciamos
+    if (terminado) {
+        document.getElementById("config").style.display = "block";
+        pantalla.innerHTML = "Presioná PLAY";
+        pantalla.style.background = "rgba(255,255,255,0.1)";
+        iniciado = false;
+        return;
+    }
+
+    // Mostrar palabra del jugador actual
+    if(!mostrando){
+
+    // Mostrar palabra o impostor
+    if(impostores.includes(jugador)){
+        document.getElementById("pantalla").style.background = "rgba(255,0,0,0.3)";
+        document.getElementById("pantalla").innerHTML = "SOS IMPOSTOR<br>" + palabra.tema;
+    } else {
+        document.getElementById("pantalla").style.background = "rgba(0,255,0,0.3)";
+        document.getElementById("pantalla").innerHTML = "Tu palabra:<br>" + palabra.nombre;
+    }
+
+    mostrando = true;
+
+    // Si es el último jugador, marcamos terminado y mostramos listo
+    if(jugador === total){
+        terminado = true;
+        document.getElementById("pantalla").innerHTML = "LISTO<br>A JUGAR";
+        document.getElementById("pantalla").style.background = "rgba(255,255,255,0.1)";
+    }
+
+    } else {
+        // Para jugadores anteriores
+        jugador++;
+        mostrando = false;
+        document.getElementById("pantalla").style.background = "rgba(255,255,255,0.1)";
+        if(jugador <= total){
+            document.getElementById("pantalla").innerHTML = "Jugador " + jugador + "<br>Tocá SIGUIENTE";
+        }
+    }
 }
 
-jugador=1;
-mostrando=false;
-iniciado=true;
-terminado=false;
-
-document.getElementById("config").style.display="none";
-
-document.getElementById("pantalla").innerHTML=
-"Jugador 1<br>Tocá SIGUIENTE";
+function toggleSorpresa() {
+    modoSorpresa = !modoSorpresa;
+    document.getElementById("sorpresaBtn").innerHTML =
+        modoSorpresa ? "Modo Sorpresa ✅" : "Modo Sorpresa ⬜";
 }
-
-function siguiente(){
-
-if(!iniciado){
-alert("Primero tocá PLAY");
-return;
-}
-
-if(terminado){
-document.getElementById("config").style.display="block";
-document.getElementById("pantalla").innerHTML="Presioná PLAY";
-iniciado=false;
-return;
-}
-
-if(jugador>total){
-document.getElementById("pantalla").innerHTML=
-"LISTO<br>A JUGAR";
-terminado=true;
-return;
-}
-
-if(!mostrando){
-
-if(impostores.includes(jugador)){
-document.getElementById("pantalla").innerHTML=
-"<span style='color:red;font-weight:bold'>SOS IMPOSTOR</span><br>Tema: "+palabra.tema;
-}else{
-document.getElementById("pantalla").innerHTML=
-"Tu palabra:<br>"+palabra.nombre;
-}
-
-mostrando=true;
-
-}else{
-
-jugador++;
-mostrando=false;
-
-if(jugador<=total){
-document.getElementById("pantalla").innerHTML=
-"Jugador "+jugador+"<br>Tocá SIGUIENTE";
-}
-
-}
-
-}
-
 </script>
 
 </body>
